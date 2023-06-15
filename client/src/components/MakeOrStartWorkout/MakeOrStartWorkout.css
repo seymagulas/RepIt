@@ -1,0 +1,84 @@
+
+.my-workout-container form {
+  display: flex;
+  flex-direction: column;
+  margin: 50px auto;
+  max-width: 400px;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.back-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.add-ex-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.add-exercise {
+  text-align: left;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.start-workout {
+  margin: 30px 0;
+  font-size: 15px;
+  padding: 10px;
+  color: green;
+  border: 1px solid green;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nme-workout,
+.ex-and-sets input {
+  width: 100%;
+  border: none;
+  background-color: #f2f2f2;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.ex-and-sets {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.ex-and-sets input {
+  padding: 6px 0 6px 6px;
+}
+
+.nme-workout {
+  font-size:medium;
+  font-weight: 550;
+  margin-bottom: 20px;
+  padding: 6px 0 6px 6px;
+}
+
+.delete-wo {
+  font-size: 14px;
+  color: red;
+  border: 1px solid red;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.trash-small {
+  font-size: 10px;
+  color: grey;
+  cursor: pointer;
+  background: none;
+  position: absolute;
+  top: 5px;
+  right: 0;
+}

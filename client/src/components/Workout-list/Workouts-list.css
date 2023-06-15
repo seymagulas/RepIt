@@ -1,0 +1,61 @@
+h1 {
+  margin-left: 25px;
+  margin-bottom: 20px;
+}
+
+.flex-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.default-text {
+  margin-left: 8px;
+}
+
+.list-title {
+  margin-left: 25px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.add-workout {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  z-index: 2;
+}
+
+.add-btn {
+  font-size: 55px;
+  border: none;
+  background-color: transparent;
+}
+
+.made-workouts {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.workout-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #d3d3d3;  
+  border-left: none;
+  border-right: none;
+  background-color: transparent;
+  width: 100%;
+}
+
+.workout-bar p {
+  margin: 6px 0;
+  margin-left: 5px;
+}
+
+.fa-chevron-right {
+  position: absolute;
+  right: 7px;
+  color: gray;
+}
