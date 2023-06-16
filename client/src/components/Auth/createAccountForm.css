@@ -1,0 +1,64 @@
+.createAccountForm{
+    float: right;
+    padding: 50px 40px;
+    background-color: transparent;
+    border-style: solid;
+    margin-right: 274px;
+    color: rgb(24, 23, 23);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 736px;
+    border-radius: 5px;
+}
+
+.createAccountForm input[type="text"], 
+.createAccountForm input[type="email"], 
+.createAccountForm input[type="password"] {
+    padding: 16px 8px;
+    border: 1px solid rgb(177, 174, 174);
+    border-radius: 5px;
+    margin-right: 0px;
+    font-size: 16px;
+    width: 250px;
+    background-color: transparent;
+
+}
+
+.createAccountForm button {
+    background-color: rgb(226, 226, 197);
+    color: rgb(24, 23, 23);
+    border-style: solid rgb(215, 209, 209);
+    width: 268px;
+    padding: 13px 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .createAccountForm {
+      margin-right: 0;
+      padding: 30px 20px;
+      height: auto;
+    }
+    
+    .createAccountForm input[type="text"],
+    .createAccountForm input[type="email"],
+    .createAccountForm input[type="password"] {
+      width: 100%;
+    }
+  
+    .createAccountForm button {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .createAccountForm {
+      padding: 20px;
+    }
+  }
+  

@@ -1,4 +1,4 @@
-body {
+body, html {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -7,7 +7,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100%;
   height: 100%;
+  
+  
+
+  
 }
+
+body{
+  background-image: url('https://i.pinimg.com/564x/2b/e6/31/2be631e3afc5ba303f6315ba8d4c41f3.jpg');
+  background-repeat: no-repeat;
+  background-position: 280px;
+  background-color: beige;
+}
+
+body.logged-in {
+  background-image: none !important;
+}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
