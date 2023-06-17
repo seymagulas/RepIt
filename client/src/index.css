@@ -13,13 +13,6 @@ body, html {
   
 }
 
-body{
-  background-image: url('https://i.pinimg.com/564x/2b/e6/31/2be631e3afc5ba303f6315ba8d4c41f3.jpg');
-  background-repeat: no-repeat;
-  background-position: 280px;
-  background-color: beige;
-}
-
 body.logged-in {
   background-image: none !important;
 }
