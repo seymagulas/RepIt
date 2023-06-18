@@ -1,11 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, FC } from 'react';
 import './Navbar.css';
 import { AppContext } from '../ContextProvider/ContextProvider';
 
-const Navbar = () => {
+interface NavbarProps {}
+
+const Navbar: React.FC<NavbarProps> = () => {
   const { changeView, currentView } = useContext(AppContext);
 
-  const handleClick = (newView) => {
+  const handleClick = (newView: string): void => {
     changeView(newView);
   };
 
@@ -26,4 +28,7 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;
+
+
