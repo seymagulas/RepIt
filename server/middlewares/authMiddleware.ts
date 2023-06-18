@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UserModel } from '../userModel';
+import { UserModel } from '../models/userModel';
 import Koa from 'koa';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';

@@ -1,7 +1,8 @@
 import  bcrypt  from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserModel } from "./userModel";
-import Koa from "koa";
+import { UserModel } from "../models/userModel";
+import { Context } from "koa";
+import bodyParser from 'koa-bodyparser';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
@@ -12,7 +13,7 @@ interface RegisterRequest {
   name: string;
 }
 
-export const register = async (ctx: Koa.Context) => {
+export const register = async (ctx: Context) => {
   try {
     const { email, password, confirmPassword, name} = ctx.request.body as RegisterRequest;
     const existingUser = await UserModel.findOne({ email });
@@ -55,7 +56,7 @@ interface LoginRequest {
   password: string;
 }
 
-export const login = async (ctx: Koa.Context) => {
+export const login = async (ctx: Context) => {
   try {
     const { email, password } = ctx.request.body as LoginRequest;
     const user = await UserModel.findOne({ email: email });
@@ -70,7 +71,7 @@ export const login = async (ctx: Koa.Context) => {
       throw new Error();
     }
 
-    const accessToken = jwt.sign({ _id: user.id }, SECRET_KEY);
+    const accessToken = jwt.sign({ id: user._id }, SECRET_KEY);
     ctx.status = 200;
     ctx.body = accessToken;
 
@@ -87,7 +88,7 @@ interface UserDetailsState {
   email: string;
 }
 
-export const userDetails = async (ctx: Koa.Context) => {
+export const userDetails = async (ctx: Context) => {
   try {
     const { _id, name, email } = ctx.state.user as UserDetailsState;
     ctx.status = 200;

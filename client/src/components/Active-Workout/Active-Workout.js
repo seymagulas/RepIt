@@ -112,7 +112,7 @@ const ActiveWorkout = () => {
       }));
     });
 
-    fetch('http://localhost:3001/finishedWorkout', {
+    fetch('http://localhost:3001/finishedWorkouts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

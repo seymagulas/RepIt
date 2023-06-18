@@ -10,7 +10,11 @@
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
 
     /* Type Checking */
-    "strict": true                                      /* Enable all strict type-checking options. */
+    "strict": true,                                      /* Enable all strict type-checking options. */
+    "typeRoots": [
+			"./node_modules/koa-body",
+			"./node_modules/@types"
+		],
   },
   "include": ["../server/index.ts"]
 }
