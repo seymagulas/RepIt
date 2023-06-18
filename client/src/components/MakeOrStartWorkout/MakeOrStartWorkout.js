@@ -80,7 +80,7 @@ const MakeOrStartWorkout = () => {
         });
     }
     else {
-      fetch('http://localhost:3001/workout', {
+      fetch('http://localhost:3001/workouts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
