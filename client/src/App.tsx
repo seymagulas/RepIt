@@ -8,7 +8,7 @@ function App() {
   return (
    <ContextProvider>
     <AppRouter />
-    <ToastContainer position='top-right' />
+    <ToastContainer position='top-right' theme="colored" />
    </ContextProvider>
   );
 }

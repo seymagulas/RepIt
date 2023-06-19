@@ -5,8 +5,6 @@ interface IAppContext {
   setWorkouts: React.Dispatch<React.SetStateAction<IWorkout[]>>;
   addWorkout: (workoutData: IWorkout) => void;
   workouts: IWorkout[];
-  changeView: (newView: string) => void;
-  currentView: string;
   selectedWorkoutId: string | null;
   setSelectedWorkoutId: React.Dispatch<React.SetStateAction<string | null>>;
   setWorkoutData: React.Dispatch<React.SetStateAction<any>>;
@@ -23,11 +21,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const addWorkout = (workoutData: IWorkout) => {
     setWorkouts([...workouts, workoutData]);
   };
-  //view 
-  const [currentView, setCurrentView] = useState('logbook');
-  const changeView = (newView: string) => {
-    setCurrentView(newView);
-  }
+  
   // save workout id
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
 
@@ -42,8 +36,6 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       setWorkouts,
       addWorkout,
       workouts,
-      changeView,
-      currentView,
       selectedWorkoutId,
       setSelectedWorkoutId,
       setWorkoutData,

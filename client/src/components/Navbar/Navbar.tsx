@@ -1,27 +1,24 @@
-import React, { useContext, FC } from 'react';
+import React from 'react';
 import './Navbar.css';
-import { AppContext } from '../ContextProvider/ContextProvider';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NavbarProps {}
 
 const Navbar: React.FC<NavbarProps> = () => {
-  const { changeView, currentView } = useContext(AppContext);
-
-  const handleClick = (newView: string): void => {
-    changeView(newView);
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className='workouts'>
       <nav className="navbar">
         <button
-          className={`navbar-button ${currentView === 'logbook' ? 'blue' : ''}`}
-          onClick={() => handleClick('logbook')}>
+          className={`navbar-button ${!location.pathname.includes('/workouts') ? 'blue' : ''}`}
+          onClick={() => navigate('/')}>
           <i className="fas fa-book fa-2x"></i> Logbook
         </button>
         <button
-          className={`navbar-button ${currentView === 'workouts' ? 'blue' : ''}`}
-          onClick={() => handleClick('workouts')}>
+          className={`navbar-button ${location.pathname.includes('/workouts') ? 'blue' : ''}`}
+          onClick={() => navigate('/workouts')}>
           <i className="fas fa-dumbbell fa-2x"></i> Workouts
         </button>
       </nav>

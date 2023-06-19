@@ -1,16 +1,16 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose from "./index";
 import { ExerciseSchema, IExercise } from "./workoutModel";
 
 export interface IFinishedWorkout {
-  user_id: number;
+  user_id: string;
   name: string;
   exercises: IExercise[];
   date?: string;
 }
 
-const finishedWorkoutSchema = new Schema<IFinishedWorkout>({
+const finishedWorkoutSchema = new mongoose.Schema<IFinishedWorkout>({
   user_id: {
-    type: Number,
+    type: String,
     required: true
   },
   name: {
@@ -24,6 +24,6 @@ const finishedWorkoutSchema = new Schema<IFinishedWorkout>({
   },
 });
 
-export const FinishedWorkout = model<IFinishedWorkout>('FinishedWorkout', finishedWorkoutSchema);
+export const FinishedWorkout = mongoose.model<IFinishedWorkout>('FinishedWorkout', finishedWorkoutSchema);
 
 

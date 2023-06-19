@@ -1,5 +1,5 @@
 import Koa from 'koa';
-const router =  require('./router');
+import { router } from './router';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 

@@ -12,7 +12,7 @@ const Workouts: React.FC = () => {
     getAllWorkouts().then(data => {
       setWorkouts(data);
     });
-  }, [workouts]);
+  }, []);
 
   const handleClickBack = () => {
     navigate('/makeOrStart');

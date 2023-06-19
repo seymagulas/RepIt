@@ -9,7 +9,7 @@ export const router = new Router();
 router.use('/', authRouter.routes());
 router.use('/workouts', workoutRouter.routes());
 router.use('/finishedWorkouts', finishedWorkoutRouter.routes());
-router.all('*', (ctx: Koa.Context) => {
+router.all('(.*)', (ctx: Koa.Context) => {
   ctx.status = 404;
   ctx.body = 'Not Found';
 });

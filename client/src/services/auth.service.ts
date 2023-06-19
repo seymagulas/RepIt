@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { authHeader } from "./auth.header";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -35,8 +36,8 @@ export const login = async ({ email, password }: LoginRequest) => {
       email,
       password
     });
-    if (response.data.accessToken) {
-      localStorage.setItem("accessToken", JSON.stringify(response.data.accessToken));
+    if (response.data) {
+      localStorage.setItem("accessToken", JSON.stringify(response.data));
     }
     return response.data;
   } catch (error) {
@@ -56,3 +57,15 @@ export const getCurrentUser = () => {
   }
   return null;
 }
+
+export const getUser = async () => {
+  try {
+    const response = await axios.get(API_URL + "/user", { headers: authHeader() });
+    if (response.data) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};

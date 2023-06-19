@@ -10,6 +10,7 @@ export const getAllWorkouts = async (ctx: Context) => {
     ctx.body = workouts;
   }
   catch (error) {
+    console.log(error);
     ctx.body = { error: 'Failed getting all workouts' };
   }
 }
@@ -18,7 +19,7 @@ export const getAllWorkouts = async (ctx: Context) => {
 export const getWorkoutById = async (ctx: Context) => {
   try {
     const user = ctx.state.user;
-    const workout = await Workout.find({ _id: ctx.params.id, user_id: user._id});
+    const workout = await Workout.findOne({ _id: ctx.params.id, user_id: user._id});
     if (!workout) {
       ctx.status = 404;
       ctx.body = { error: 'Workout not found' };
@@ -50,12 +51,13 @@ export const createWorkout = async (ctx: Context) => {
       user_id: user._id
     })
   
-    await workout.save();
+    const newWorkout = await workout.save();
 
     ctx.status = 201;
-    ctx.body = { message: 'Workout created' };
+    ctx.body = newWorkout;
   }
   catch (error) {
+    console.log(error);
     ctx.body = { error: 'Error while creating the workout' };
   }
 }

@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../ContextProvider/ContextProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { toast } from "react-toastify";
 import { ISet } from '../../utils/interfaces';
 import { getWorkout } from '../../services/workout.service';
 import { getFinishedWorkout, createFinishedWorkout, deleteFinishedWorkout } from '../../services/finishedWorkout.service';
-import './MakeOrStartWorkout.css';
+import './Active-Workout.css';
 
 const ActiveWorkout: React.FC = () => {
   const {
@@ -21,8 +20,6 @@ const ActiveWorkout: React.FC = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [weightData, setWeightData] = useState([]);
   const [repsData, setRepsData] = useState([]);
-  // const [prevWeightData, setPrevWeightData] = useState([]);
-  // const [prevRepsData, setPrevRepsData] = useState([])
   const [repeat, setRepeat] = useState(false);
   const navigate = useNavigate();
 
@@ -56,7 +53,7 @@ const ActiveWorkout: React.FC = () => {
         setWeightData(weights);
         setRepsData(reps);
       });
-    } else {
+    } else if (selectedWorkoutId) {
       getWorkout(selectedWorkoutId).then(data => {
         setWorkoutData(data);
         const setDetails: ISet[] = [];
@@ -113,28 +110,26 @@ const ActiveWorkout: React.FC = () => {
 
   const handleDone = async () => {
     await handleSubmit();
-    navigate('/logbook');
+    navigate('/');
   };
 
   const handleDelete = async () => {
     const result = await deleteFinishedWorkout(finishedWorkoutId);
     if (result) {
       setRepeat(false);
-      navigate('/logbook');
+      navigate('/');
     }
   };
 
   const handleClickRepeat = () => {
     setRepeat(!repeat);
-    // setPrevWeightData(weightData);
-    // setPrevRepsData(repsData);
   }
 
   return (
     <div>
       <div className='header'>
         <button className='back-btn' onClick={() => {
-          navigate('/logbook');
+          navigate('/');
           setSelectedWorkoutId(null);
         }}>
           <i className="fas fa-chevron-left"></i>
@@ -150,12 +145,12 @@ const ActiveWorkout: React.FC = () => {
       </div>
 
       <div className='name-workout-box'>
-        <h2 className='name-workout'>{workoutData.name}</h2>
+        <h2 className='name-workout'>{workoutData?.name}</h2>
       </div>
 
       {!workoutData ? 
       null : 
-      workoutData.exercises.map((exercise, exerciseIndex) => (
+      workoutData?.exercises.map((exercise, exerciseIndex) => (
         <div className='exercise-box' key={exerciseIndex}>
           <div className="exercise-header">
             <h3 className='name-exercise'>{exercise.exercise}</h3>
@@ -169,7 +164,6 @@ const ActiveWorkout: React.FC = () => {
                 className='workout-input'
                 type='number'
                 value={weightData[exerciseIndex * exercise.sets + setIndex] || 0}
-                // should make the prevWeightData as placeholder here.
                 onChange={(e) =>
                   handleWeightChange(
                     exerciseIndex * exercise.sets + setIndex,
@@ -182,7 +176,6 @@ const ActiveWorkout: React.FC = () => {
                 className='workout-input'
                 type='number'
                 value={repsData[exerciseIndex * exercise.sets + setIndex] || 0}
-                // should make the prevRepsData as placeholder here.
                 onChange={(e) =>
                   handleRepsChange(
                     exerciseIndex * exercise.sets + setIndex,
@@ -194,12 +187,14 @@ const ActiveWorkout: React.FC = () => {
           ))}
         </div>
       ))}
-      <div className='delete-box'>
-        <button className='delete-btn' onClick={handleDelete}>
-          DELETE THIS WORKOUT
-          <FontAwesomeIcon icon={faTrashAlt} className='delete-icon' />
-        </button>
+      {finishedWorkoutId && (
+        <div className='delete-box'>
+          <button className='delete-btn' onClick={handleDelete}>
+            DELETE THIS WORKOUT
+            <FontAwesomeIcon icon={faTrashAlt} className='delete-icon' />
+          </button>
       </div>
+      )}
     </div>
   );
 };

@@ -19,19 +19,19 @@ export const register = async (ctx: Context) => {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       ctx.status = 422;
-      ctx.body = 'User already exists, please login.';
+      ctx.body = { message: 'User already exists, please login.' };
       return;
     }
 
     if (password === '') {
       ctx.status = 422;
-      ctx.body = 'Password cannot be emty.';
+      ctx.body = { message: 'Password cannot be emty.' };
       return;
     }
 
     if (password !== confirmPassword) {
       ctx.status = 422;
-      ctx.body = 'Passwords do not match.';
+      ctx.body = { message: 'Passwords do not match.' };
       return;
     }
 
@@ -47,7 +47,7 @@ export const register = async (ctx: Context) => {
   } catch (error) {
     console.log(error);
     ctx.status = 500;
-    ctx.body = 'Could not create user'
+    ctx.body = { message: 'Could not create user' };
   }
 }
 
@@ -78,7 +78,7 @@ export const login = async (ctx: Context) => {
   } catch (error) {
     console.log(error);
     ctx.status = 401;
-    ctx.body = 'Username or password is incorrect'
+    ctx.body = { message: 'Username or password is incorrect' };
   }
 }
 
@@ -97,6 +97,6 @@ export const userDetails = async (ctx: Context) => {
   } catch (error) {
     console.log(error);
     ctx.status = 404;
-    ctx.body = 'Not found'
+    ctx.body = { message: 'Not found' };
   }
 }
