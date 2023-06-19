@@ -1,14 +1,19 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MakeOrStartWorkout.css';
 import { AppContext } from '../ContextProvider/ContextProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { toast } from "react-toastify";
+import { IExercise } from '../../utils/interfaces';
+import { updateWorkout, createWorkout, deleteWorkout } from '../../services/workout.service';
 
-const MakeOrStartWorkout = () => {
+const MakeOrStartWorkout: React.FC = () => {
   const { addWorkout, changeView, workouts, setWorkouts, selectedWorkoutId, setWorkoutData, setSelectedWorkoutId } = useContext(AppContext);
-  const [name, setName] = useState('');
-  const [exercises, setExercises] = useState([{ exercise: '', sets: '' }]);
-
+  const [name, setName] = useState<string>('');
+  const [exercises, setExercises] = useState<IExercise[]>([{ exercise: '', sets: 0 }]);
+  const navigate = useNavigate();
+ 
   useEffect(() => {
     if (selectedWorkoutId) {
       const selectedWorkout = workouts.find((workout) => workout._id === selectedWorkoutId);
@@ -17,118 +22,76 @@ const MakeOrStartWorkout = () => {
     } 
   }, [selectedWorkoutId]);
 
-  const handleExerciseChange = (index, exOrSet, value) => {
+  const handleExerciseChange = (index: number, fieldType: string, value: string) => {
     const updatedExercises = [...exercises];
-    updatedExercises[index][exOrSet] = value;
+    updatedExercises[index][fieldType] = value;
     setExercises(updatedExercises);
   };
 
-  const handleAddExercise = (e) => {
-    e.preventDefault();
-    setExercises([...exercises, { exercise: '', sets: '' }]);
+  const handleAddExercise = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    setExercises([...exercises, { exercise: '', sets: 0 }]);
   };
 
-  const handleClick = (newView) => {
+  const handleClick = (newView: string) => {
     changeView(newView);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (!name) {
-      console.log('Workout name is required');
+      toast.error('Workout name is required');
       return;
     }
-    e.preventDefault();
+    event.preventDefault();
     const workoutData = {
       name,
       exercises: exercises.map((exercise) => ({
         exercise: exercise.exercise,
-        sets: parseInt(exercise.sets)
+        sets: exercise.sets
       }))
     };
 
     setWorkoutData(workoutData);
     
     if (selectedWorkoutId !== null) {
-      fetch(`http://localhost:3001/workouts/${selectedWorkoutId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(workoutData)
-      })
-        .then((response) => {
-          if (response.ok) {
-            const updatedWorkouts = workouts.map((workout) => {
-              if (workout._id === selectedWorkoutId) {
-                return {
-                  ...workout,
-                  name: workoutData.name,
-                  exercises: workoutData.exercises,
-                };
-              }
-              return workout;
-            });
-            setWorkouts(updatedWorkouts);
-            console.log(workoutData);
-            console.log('Workout updated');
-          } else {
-            throw new Error('Failed to update workout');
+      const result = updateWorkout(selectedWorkoutId, workoutData);
+      if (result) {
+        const updatedWorkouts = workouts.map((workout) => {
+          if (workout._id === selectedWorkoutId) {
+            return {
+              ...workout,
+              name: workoutData.name,
+              exercises: workoutData.exercises,
+            };
           }
-        })
-        .catch((error) => {
-          console.log(error);
+          return workout;
         });
+        setWorkouts(updatedWorkouts);
+      }
     }
     else {
-      fetch('http://localhost:3001/workouts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(workoutData)
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('Workout created');
-            console.log(workoutData);
-            addWorkout(workoutData);
-            response.json().then((data) => {
-              setSelectedWorkoutId(data._id);
-            });
-          } else {
-            throw new Error('Failed to create workout');
-          }
-        })
-        .catch((error) => {
-          console.log(error);
+      const result = createWorkout(workoutData);
+      if (result) {
+        addWorkout(workoutData);
+        result.then((data) => {
+          setSelectedWorkoutId(data._id);
         });
+      }
     } 
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selectedWorkoutId) {
-      handleClick('workouts');
+      navigate('/workouts');
       return;
     }
-    console.log(selectedWorkoutId);
-    fetch(`http://localhost:3001/workouts/${selectedWorkoutId}`, {
-      method: 'DELETE'
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Workout deleted');
-          const updatedWorkouts = workouts.filter((workout) => workout._id !== selectedWorkoutId);
-          setWorkouts(updatedWorkouts);
-          handleClick('workouts');
-        } else {
-          throw new Error('Failed to delete workout');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const result = await deleteWorkout(selectedWorkoutId);
+    if (result) {
+      const updatedWorkouts = workouts.filter((workout) => workout._id !== selectedWorkoutId);
+      setWorkouts(updatedWorkouts);
+      navigate('/workouts');
+    }
   };
-
 
   return (
     <div>
@@ -156,7 +119,7 @@ const MakeOrStartWorkout = () => {
             className='nme-workout'
             placeholder='Name Workout'
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             required
           />
           {exercises.map((exercise, index) => (
@@ -165,13 +128,13 @@ const MakeOrStartWorkout = () => {
                 className='exercise'
                 placeholder='Exercise'
                 value={exercise.exercise}
-                onChange={(e) => handleExerciseChange(index, 'exercise', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleExerciseChange(index, 'exercise', e.target.value)}
               />
               <input
                 className='sets'
                 placeholder='Number of sets (e.g., 3)'
                 value={exercise.sets}
-                onChange={(e) => handleExerciseChange(index, 'sets', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleExerciseChange(index, 'sets', e.target.value)}
               />
               <FontAwesomeIcon icon={faTrashAlt} className='trash-small' />
             </div>

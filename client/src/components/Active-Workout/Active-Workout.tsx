@@ -1,12 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import './Active-Workout.css';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../ContextProvider/ContextProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { toast } from "react-toastify";
+import { ISet } from '../../utils/interfaces';
+import { getWorkout } from '../../services/workout.service';
+import { getFinishedWorkout, createFinishedWorkout, deleteFinishedWorkout } from '../../services/finishedWorkout.service';
+import './MakeOrStartWorkout.css';
 
-const ActiveWorkout = () => {
+const ActiveWorkout: React.FC = () => {
   const {
-    changeView,
     workoutData,
     finishedWorkoutId,
     setFinishedWorkoutId,
@@ -20,8 +24,7 @@ const ActiveWorkout = () => {
   // const [prevWeightData, setPrevWeightData] = useState([]);
   // const [prevRepsData, setPrevRepsData] = useState([])
   const [repeat, setRepeat] = useState(false);
-
-  console.log(finishedWorkoutId);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const currentDate = new Date().toLocaleDateString('en-US', {
@@ -33,73 +36,62 @@ const ActiveWorkout = () => {
 
   useEffect(() => {
     if (finishedWorkoutId !== null) {
-      fetch(`http://localhost:3001/finishedWorkouts/${finishedWorkoutId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setWorkoutData(data);
-          const setDetails = [];
-          data.exercises.forEach((exercise) => {
-            for (let i = 0; i < exercise.sets; i++) {
-              const setIndex = setDetails.length;
-              const set = {
-                weight: '',
-                reps: '',
-                ...exercise.setDetails[i],
-              };
-              setDetails[setIndex] = set;
-            }
-          });
-
-          const weights = setDetails.map((set) => set.weight);
-          const reps = setDetails.map((set) => set.reps);
-
-          setWeightData(weights);
-          setRepsData(reps);
-        })
-        .catch((error) => {
-          console.log('Error fetching finished workout details:', error);
+      getFinishedWorkout(finishedWorkoutId).then(data => {
+        setWorkoutData(data);
+        const setDetails: ISet[] = [];
+        data.exercises.forEach((exercise) => {
+          for (let i = 0; i < exercise.sets; i++) {
+            const setIndex = setDetails.length;
+            const set: ISet = {
+              weight: 0,
+              reps: 0,
+              ...exercise.setDetails[i],
+            };
+            setDetails[setIndex] = set;
+          }
         });
+        const weights = setDetails.map((set) => set.weight);
+        const reps = setDetails.map((set) => set.reps);
+
+        setWeightData(weights);
+        setRepsData(reps);
+      });
     } else {
-      fetch(`http://localhost:3001/workouts/${selectedWorkoutId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setWorkoutData(data);
-          const setDetails = [];
-          data.exercises.forEach((exercise) => {
-            for (let i = 0; i < exercise.sets; i++) {
-              const set = {
-                weight: '',
-                reps: '',
-              };
-              setDetails.push(set);
-            }
-          });
-
-          const weights = setDetails.map((set) => set.weight);
-          const reps = setDetails.map((set) => set.reps);
-
-          setWeightData(weights);
-          setRepsData(reps);
-        })
-        .catch((error) => {
-          console.log('Error fetching workout details:', error);
+      getWorkout(selectedWorkoutId).then(data => {
+        setWorkoutData(data);
+        const setDetails: ISet[] = [];
+        data.exercises.forEach(exercise => {
+          for (let i = 0; i < exercise.sets; i++) {
+            const set: ISet = {
+              weight: 0,
+              reps: 0,
+            };
+            setDetails.push(set);
+          }
         });
+
+        const weights = setDetails.map((set) => set.weight);
+        const reps = setDetails.map((set) => set.reps);
+
+        setWeightData(weights);
+        setRepsData(reps);
+      });
     }
   }, [finishedWorkoutId, selectedWorkoutId, repeat]);
 
-  const handleWeightChange = (index, value) => {
+  const handleWeightChange = (index: number, value: number) => {
     const newWeightData = [...weightData];
     newWeightData[index] = value;
     setWeightData(newWeightData);
   };
 
-  const handleRepsChange = (index, value) => {
+  const handleRepsChange = (index: number, value: number) => {
     const newRepsData = [...repsData];
     newRepsData[index] = value;
     setRepsData(newRepsData);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const finishedWorkoutData = { ...workoutData, date: currentDate };
 
     if (finishedWorkoutId) delete finishedWorkoutData._id;
@@ -107,55 +99,29 @@ const ActiveWorkout = () => {
 
     finishedWorkoutData.exercises.forEach((exercise, exerciseIndex) => {
       exercise.setDetails = [...Array(exercise.sets)].map((_, setIndex) => ({
-        weight: weightData[exerciseIndex * exercise.sets + setIndex] || '',
-        reps: repsData[exerciseIndex * exercise.sets + setIndex] || '',
+        weight: weightData[exerciseIndex * exercise.sets + setIndex] || 0,
+        reps: repsData[exerciseIndex * exercise.sets + setIndex] || 0,
       }));
     });
 
-    fetch('http://localhost:3001/finishedWorkouts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(finishedWorkoutData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Finished workout submitted:', data);
-      })
-      .catch((error) => {
-        console.log('Error submitting finished workout:', error);
-      });
-    console.log(finishedWorkoutData);
+    await createFinishedWorkout(finishedWorkoutData);
+
     setFinishedWorkoutId(null);
     setSelectedWorkoutId(null);
     setRepeat(false);
   };
 
-  const handleClick = (newView) => {
-    if (newView === 'logbook') {
-      handleSubmit();
-    }
-    changeView(newView);
+  const handleDone = async () => {
+    await handleSubmit();
+    navigate('/logbook');
   };
 
-  if (!workoutData) {
-    return null;
-  }
-
-  const handleDelete = () => {
-    fetch(`http://localhost:3001/finishedWorkouts/${finishedWorkoutId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        changeView('logbook');
-        setRepeat(false);
-        console.log('Finished workout deleted:', data);
-      })
-      .catch((error) => {
-        console.log('Error deleting finished workout:', error);
-      });
+  const handleDelete = async () => {
+    const result = await deleteFinishedWorkout(finishedWorkoutId);
+    if (result) {
+      setRepeat(false);
+      navigate('/logbook');
+    }
   };
 
   const handleClickRepeat = () => {
@@ -168,7 +134,7 @@ const ActiveWorkout = () => {
     <div>
       <div className='header'>
         <button className='back-btn' onClick={() => {
-          changeView('logbook')
+          navigate('/logbook');
           setSelectedWorkoutId(null);
         }}>
           <i className="fas fa-chevron-left"></i>
@@ -176,7 +142,7 @@ const ActiveWorkout = () => {
         {finishedWorkoutId !== null && repeat === false ? (
           <button className='repeat-btn' onClick={handleClickRepeat}>RESTART</button>
         ) : (
-          <button className='done-btn' onClick={() => handleClick('logbook')}>
+          <button className='done-btn' onClick={() => handleDone()}>
             DONE
           </button>
         )}
@@ -187,7 +153,9 @@ const ActiveWorkout = () => {
         <h2 className='name-workout'>{workoutData.name}</h2>
       </div>
 
-      {workoutData.exercises.map((exercise, exerciseIndex) => (
+      {!workoutData ? 
+      null : 
+      workoutData.exercises.map((exercise, exerciseIndex) => (
         <div className='exercise-box' key={exerciseIndex}>
           <div className="exercise-header">
             <h3 className='name-exercise'>{exercise.exercise}</h3>
@@ -200,12 +168,12 @@ const ActiveWorkout = () => {
               <input
                 className='workout-input'
                 type='number'
-                value={weightData[exerciseIndex * exercise.sets + setIndex] || '' }
+                value={weightData[exerciseIndex * exercise.sets + setIndex] || 0}
                 // should make the prevWeightData as placeholder here.
                 onChange={(e) =>
                   handleWeightChange(
                     exerciseIndex * exercise.sets + setIndex,
-                    e.target.value
+                    Number(e.target.value)
                   )
                 }
               />
@@ -213,12 +181,12 @@ const ActiveWorkout = () => {
               <input
                 className='workout-input'
                 type='number'
-                value={repsData[exerciseIndex * exercise.sets + setIndex] || ''}
+                value={repsData[exerciseIndex * exercise.sets + setIndex] || 0}
                 // should make the prevRepsData as placeholder here.
                 onChange={(e) =>
                   handleRepsChange(
                     exerciseIndex * exercise.sets + setIndex,
-                    e.target.value
+                    Number(e.target.value)
                   )
                 }
               />
