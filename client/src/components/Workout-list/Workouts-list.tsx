@@ -1,38 +1,33 @@
 import React, { useContext, useEffect } from 'react';
-import './Workouts-list.css';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../ContextProvider/ContextProvider';
+import { getAllWorkouts } from '../../services/workout.service';
+import './Workouts-list.css';
 
-const Workouts = () => {
-  const { workouts, changeView, setSelectedWorkoutId, setWorkouts } = useContext(AppContext);
+const Workouts: React.FC = () => {
+  const { workouts, setSelectedWorkoutId, setWorkouts } = useContext(AppContext);
+  const navigate = useNavigate();
   
-  const fetchWorkouts = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/workouts'); 
-      const data = await response.json();
-      setWorkouts(data);
-    } catch (error) {
-      console.error('Error fetching workouts:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchWorkouts();
+    getAllWorkouts().then(data => {
+      setWorkouts(data);
+    });
   }, [workouts]);
 
-  const handleClickBack = (newView) => {
-    changeView(newView);
+  const handleClickBack = () => {
+    navigate('/makeOrStart');
     setSelectedWorkoutId(null);
   }
-  const handleClickWorkout = (workoutId) => {
-    console.log(workoutId);
+
+  const handleClickWorkout = (workoutId: string) => {
     setSelectedWorkoutId(workoutId);
-    changeView('makeOrStart');
+    navigate('/makeOrStart');
   }
 
   return (
     <div className='flex-box'>
       <div className='add-workout'>
-        <button className='add-btn' onClick={() => handleClickBack('makeOrStart')} >+</button>
+        <button className='add-btn' onClick={() => handleClickBack()} >+</button>
       </div>
       <h1 className='list-title'>Workouts</h1>
       <div className='made-workouts'>
