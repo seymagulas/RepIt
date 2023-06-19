@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from "react-toastify";
-import { login } from "../../services/auth.service";
+import { getUser, login } from "../../services/auth.service";
 import './auth.css';
 
  interface FormData {
@@ -34,7 +34,8 @@ const Login: React.FC = () => {
     setIsSubmitted(true);
     try {
       const response = await login({ email: data.email, password: data.password });
-      if (response?.accessToken) {
+      if (response) {
+        await getUser();
         navigate('/');
       }
     } catch (error) {

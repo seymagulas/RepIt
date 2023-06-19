@@ -18,10 +18,10 @@ const AppRouter: React.FC = () => {
         <Route path='/login' element={<Login />}/>
         <Route path='/register' element={<Register />} />
         <Route element={<AuthGuard />}>
+          <Route path='/' element={<Logbook />} />
           <Route path='/active-workout' element={<ActiveWorkout />} />
           <Route path='/workouts' element={<Workouts />} />
           <Route path='/makeOrStart' element={<MakeOrStartWorkout />} />
-          <Route path='/logbook' element={<Logbook />} />
         </Route>
       </Routes>
     </>

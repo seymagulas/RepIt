@@ -4,6 +4,7 @@ import { AppContext } from '../ContextProvider/ContextProvider';
 import { getAllFinishedWorkouts } from '../../services/finishedWorkout.service';
 import { IFinishedWorkout } from '../../utils/interfaces';
 import './Logbook.css';
+import { logout } from '../../services/auth.service';
 
 const Logbook: React.FC = () => {
     const navigate = useNavigate();
@@ -19,9 +20,17 @@ const Logbook: React.FC = () => {
       setFinishedWorkoutId(workoutId);
     };
 
+    const handleLogout = () => {
+      logout();
+      navigate('/login');
+    }
+
     return (
       <div className="logbook">
-        <h1>Logbook</h1>
+        <div className='logbook-header'>
+          <h1>Logbook</h1>
+          <button className='logout-btn' onClick={handleLogout}>Logout</button>
+        </div>
         <div className="logged-workouts">
           <div className="mock-month-year">
             <p className='month-year'>June 2023</p>

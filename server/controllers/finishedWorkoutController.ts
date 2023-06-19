@@ -19,7 +19,7 @@ export const createFinishedWorkout = async (ctx: Context) => {
 
   } catch (error) {
     ctx.status = 500;
-    ctx.body = { error: 'Error creating finished workout.' };
+    ctx.body = { message: 'Error creating finished workout.' };
   }
 };
 
@@ -32,7 +32,7 @@ export const getAllFinishedWorkouts = async (ctx: Context) => {
 
   } catch (error) {
     ctx.status = 500;
-    ctx.body = { error: 'An error occurred while fetching finished workouts' };
+    ctx.body = { message: 'An error occurred while fetching finished workouts' };
   }
 };
 
@@ -45,14 +45,14 @@ export const getFinishedWorkoutDetails = async (ctx: Context) => {
 
     if (!finishedWorkout) {
       ctx.status = 404;
-      ctx.body = { error: 'Finished workout not found' };
+      ctx.body = { message: 'Finished workout not found' };
       return;
     }
     ctx.body = finishedWorkout;
 
   } catch (error) {
     ctx.status = 500;
-    ctx.body = { error: 'An error occurred while fetching finished workout details' };
+    ctx.body = { message: 'An error occurred while fetching finished workout details' };
   }
 };
 
@@ -65,7 +65,7 @@ export const deleteFinishedWorkout = async (ctx: Context) => {
 
     if (!finishedWorkout) {
       ctx.status = 404;
-      ctx.body = { error: 'Workout not found' };
+      ctx.body = { message: 'Workout not found' };
       return;
     }
     ctx.status = 200;
@@ -73,6 +73,6 @@ export const deleteFinishedWorkout = async (ctx: Context) => {
 
   } catch (error) {
     ctx.status = 500;
-    ctx.body = { error: 'Internal server error' };
+    ctx.body = { message: 'Internal server error' };
   }
 };

@@ -4,11 +4,6 @@ body .logbook {
   overflow-x: hidden;
 }
 
-h1 {
-  margin-left: 25px;
-  margin-bottom: 2px;
-}
-
 .month-year {
   background-color: #f2f2f2;
   font-style: italic;
@@ -64,4 +59,18 @@ h1 {
   font-size:small;
 }
 
+.logbook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: rgb(255, 101, 101);
+  color: white;
+  border: 1px solid rgb(255, 101, 101);
+  border-radius: 5px;
+  padding: 8px 16px;
+  margin-right: 25px;
+}
 

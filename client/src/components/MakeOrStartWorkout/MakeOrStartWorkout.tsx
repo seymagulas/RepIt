@@ -3,17 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import './MakeOrStartWorkout.css';
 import { AppContext } from '../ContextProvider/ContextProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDumbbell, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 import { IExercise } from '../../utils/interfaces';
 import { updateWorkout, createWorkout, deleteWorkout } from '../../services/workout.service';
 
 const MakeOrStartWorkout: React.FC = () => {
-  const { addWorkout, changeView, workouts, setWorkouts, selectedWorkoutId, setWorkoutData, setSelectedWorkoutId } = useContext(AppContext);
+  const { addWorkout, workouts, setWorkouts, selectedWorkoutId, setWorkoutData, setSelectedWorkoutId, setFinishedWorkoutId } = useContext(AppContext);
   const [name, setName] = useState<string>('');
   const [exercises, setExercises] = useState<IExercise[]>([{ exercise: '', sets: 0 }]);
   const navigate = useNavigate();
  
+  useEffect(() => {
+    setFinishedWorkoutId(null);
+  }, []);
+
   useEffect(() => {
     if (selectedWorkoutId) {
       const selectedWorkout = workouts.find((workout) => workout._id === selectedWorkoutId);
@@ -33,14 +37,10 @@ const MakeOrStartWorkout: React.FC = () => {
     setExercises([...exercises, { exercise: '', sets: 0 }]);
   };
 
-  const handleClick = (newView: string) => {
-    changeView(newView);
-  };
-
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (!name) {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (name.length === 0) {
       toast.error('Workout name is required');
-      return;
+      throw new Error();
     }
     event.preventDefault();
     const workoutData = {
@@ -54,7 +54,7 @@ const MakeOrStartWorkout: React.FC = () => {
     setWorkoutData(workoutData);
     
     if (selectedWorkoutId !== null) {
-      const result = updateWorkout(selectedWorkoutId, workoutData);
+      const result = await updateWorkout(selectedWorkoutId, workoutData);
       if (result) {
         const updatedWorkouts = workouts.map((workout) => {
           if (workout._id === selectedWorkoutId) {
@@ -70,12 +70,10 @@ const MakeOrStartWorkout: React.FC = () => {
       }
     }
     else {
-      const result = createWorkout(workoutData);
+      const result = await createWorkout(workoutData);
       if (result) {
         addWorkout(workoutData);
-        result.then((data) => {
-          setSelectedWorkoutId(data._id);
-        });
+        setSelectedWorkoutId(result._id);
       }
     } 
   };
@@ -100,20 +98,10 @@ const MakeOrStartWorkout: React.FC = () => {
           <button
             className='back-btn'
             onClick={(e) => {
-              handleSubmit(e);
-              handleClick('workouts');
+              handleSubmit(e).then(() => {navigate('/workouts')}).catch(() => console.log('Error'));
             }}
           >
           <i className="fas fa-chevron-left"></i>
-          </button>
-          <button
-            className='start-workout'
-            onClick={(e) => {
-              handleSubmit(e);
-              handleClick('activeWorkout');
-            }}
-          >
-            START THIS WORKOUT
           </button>
           <input
             className='nme-workout'
@@ -136,21 +124,30 @@ const MakeOrStartWorkout: React.FC = () => {
                 value={exercise.sets}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleExerciseChange(index, 'sets', e.target.value)}
               />
-              <FontAwesomeIcon icon={faTrashAlt} className='trash-small' />
             </div>
           ))}
           <div className='add-ex-box'>
             <button className='add-exercise' onClick={handleAddExercise}>
-              Add Exercise
+              <FontAwesomeIcon icon={faPlus} />
+              &nbsp;Add Exercise
+            </button>
+          </div>
+          <div className='delete-box-container'>
+            <button className='workout-btn delete-workout-btn' onClick={handleDelete}>
+              DELETE
+              <FontAwesomeIcon icon={faTrashAlt} className='delete-icon' />
+            </button>
+            <button
+              className='workout-btn start-workout-btn'
+              onClick={(e) => {
+                handleSubmit(e).then(() => {navigate('/active-workout')}).catch(() => console.log('Error'));
+              }}
+            >
+              START
+              <FontAwesomeIcon icon={faDumbbell} className='delete-icon' />
             </button>
           </div>
         </form>
-        <div className='delete-box'>
-          <button className='delete-wo' onClick={handleDelete}>
-            DELETE THIS WORKOUT
-            <FontAwesomeIcon icon={faTrashAlt} className='delete-icon' />
-          </button>
-        </div>
       </div>
     </div>
   );
