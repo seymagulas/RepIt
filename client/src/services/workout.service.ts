@@ -58,6 +58,8 @@ export const getAllWorkouts = async () => {
   }
 }
 
+
+
 export const getWorkout = async (workoutId: string): Promise<IWorkout> => {
   try {
     const response = await axios.get(
