@@ -35,7 +35,8 @@ const Logbook: React.FC = () => {
           <div className="mock-month-year">
             <p className='month-year'>June 2023</p>
           </div>            
-          {finishedWorkouts.map((workout) => (
+          {!finishedWorkouts ? (<div>No finished workout...</div>) 
+          : finishedWorkouts.map((workout) => (
             <div className="workout-container" key={workout._id} onClick={() => handleClick(workout._id)}>
               <div className="workout-date">
                 <p className="day">{new Date(workout.date).toLocaleDateString('en-US', { weekday: 'short' })}</p>

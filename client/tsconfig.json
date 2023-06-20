@@ -7,7 +7,9 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "node"]
   },
   "include": ["src", "index.d.ts"]
 }
