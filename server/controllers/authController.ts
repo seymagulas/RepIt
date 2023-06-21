@@ -25,7 +25,7 @@ export const register = async (ctx: Context) => {
 
     if (password === '') {
       ctx.status = 422;
-      ctx.body = { message: 'Password cannot be emty.' };
+      ctx.body = { message: 'Password cannot be empty.' };
       return;
     }
 
