@@ -4,5 +4,5 @@ import { Outlet, Navigate } from "react-router-dom";
 
 export const AuthGuard: React.FC = () => {
   const authUser = getCurrentUser();
-  return authUser ? <Outlet /> : <Navigate to={'/login'} replace />
-}
+  return authUser ? <Outlet /> : <Navigate to={"/login"} replace />;
+};

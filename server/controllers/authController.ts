@@ -1,7 +1,7 @@
-import  bcrypt  from "bcrypt";
-import jwt from "jsonwebtoken";
-import { UserModel } from "../models/userModel";
-import { Context } from "koa";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { UserModel } from '../models/userModel';
+import { Context } from 'koa';
 import bodyParser from 'koa-bodyparser';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
@@ -15,7 +15,7 @@ interface RegisterRequest {
 
 export const register = async (ctx: Context) => {
   try {
-    const { email, password, confirmPassword, name} = ctx.request.body as RegisterRequest;
+    const { email, password, confirmPassword, name } = ctx.request.body as RegisterRequest;
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       ctx.status = 422;
@@ -23,7 +23,7 @@ export const register = async (ctx: Context) => {
       return;
     }
 
-    if (password === '') {
+    if (password.trim() === '') {
       ctx.status = 422;
       ctx.body = { message: 'Password cannot be empty.' };
       return;
@@ -49,7 +49,7 @@ export const register = async (ctx: Context) => {
     ctx.status = 500;
     ctx.body = { message: 'Could not create user' };
   }
-}
+};
 
 interface LoginRequest {
   email: string;
@@ -74,13 +74,12 @@ export const login = async (ctx: Context) => {
     const accessToken = jwt.sign({ id: user._id }, SECRET_KEY);
     ctx.status = 200;
     ctx.body = accessToken;
-
   } catch (error) {
     console.log(error);
     ctx.status = 401;
     ctx.body = { message: 'Username or password is incorrect' };
   }
-}
+};
 
 interface UserDetailsState {
   _id: string;
@@ -92,11 +91,10 @@ export const userDetails = async (ctx: Context) => {
   try {
     const { _id, name, email } = ctx.state.user as UserDetailsState;
     ctx.status = 200;
-    ctx.body = ({ _id, name, email });
-    
+    ctx.body = { _id, name, email };
   } catch (error) {
     console.log(error);
     ctx.status = 404;
     ctx.body = { message: 'Not found' };
   }
-}
+};

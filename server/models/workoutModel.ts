@@ -1,4 +1,4 @@
-import mongoose from "./index";
+import mongoose from './index';
 
 export interface ISet {
   weight?: number;
@@ -7,26 +7,26 @@ export interface ISet {
 
 const setSchema = new mongoose.Schema<ISet>({
   weight: {
-    type: Number,
+    type: Number
   },
   reps: {
-    type: Number,
-  },
+    type: Number
+  }
 });
 
 export interface IExercise {
   exercise: string;
   sets?: number;
-  setDetails: ISet[]
+  setDetails: ISet[];
 }
 export const ExerciseSchema = new mongoose.Schema<IExercise>({
   exercise: {
     type: String,
-    required: true,
+    required: true
   },
   sets: {
     type: Number,
-    default: 0,
+    default: 0
   },
   setDetails: [setSchema]
 });
@@ -34,7 +34,7 @@ export const ExerciseSchema = new mongoose.Schema<IExercise>({
 export interface IWorkout extends mongoose.Document {
   user_id: string;
   name: string;
-  exercises: IExercise[]
+  exercises: IExercise[];
 }
 
 const WorkoutSchema = new mongoose.Schema<IWorkout>({
@@ -44,9 +44,9 @@ const WorkoutSchema = new mongoose.Schema<IWorkout>({
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
-  exercises: [ExerciseSchema],
+  exercises: [ExerciseSchema]
 });
 
 export const Workout = mongoose.model<IWorkout>('Workout', WorkoutSchema);

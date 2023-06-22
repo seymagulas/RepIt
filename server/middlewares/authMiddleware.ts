@@ -4,7 +4,7 @@ import Koa from 'koa';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'secret_key';
 
-export const authMiddleware = async (ctx: Koa.Context, next: ()=> Promise<any>) => {
+export const authMiddleware = async (ctx: Koa.Context, next: () => Promise<any>) => {
   try {
     const authHeaders = ctx.headers.authorization;
     if (!authHeaders) {
@@ -23,9 +23,8 @@ export const authMiddleware = async (ctx: Koa.Context, next: ()=> Promise<any>) 
 
     ctx.state.user = user;
     await next();
-
   } catch (error) {
     ctx.status = 401;
-    ctx.body = 'Please authenticate'
+    ctx.body = 'Please authenticate';
   }
-}
+};

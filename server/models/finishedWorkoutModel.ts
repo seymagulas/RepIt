@@ -1,5 +1,5 @@
-import mongoose from "./index";
-import { ExerciseSchema, IExercise } from "./workoutModel";
+import mongoose from './index';
+import { ExerciseSchema, IExercise } from './workoutModel';
 
 export interface IFinishedWorkout {
   user_id: string;
@@ -15,15 +15,16 @@ const finishedWorkoutSchema = new mongoose.Schema<IFinishedWorkout>({
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   exercises: [ExerciseSchema],
   date: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
-export const FinishedWorkout = mongoose.model<IFinishedWorkout>('FinishedWorkout', finishedWorkoutSchema);
-
-
+export const FinishedWorkout = mongoose.model<IFinishedWorkout>(
+  'FinishedWorkout',
+  finishedWorkoutSchema
+);
