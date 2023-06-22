@@ -1,5 +1,5 @@
-import React, { createContext, useState, ReactNode } from 'react';
-import { IWorkout } from '../../utils/interfaces';
+import React, { createContext, useState, ReactNode } from "react";
+import { IWorkout } from "../../utils/interfaces";
 
 interface IAppContext {
   setWorkouts: React.Dispatch<React.SetStateAction<IWorkout[]>>;
@@ -21,31 +21,37 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const addWorkout = (workoutData: IWorkout) => {
     setWorkouts([...workouts, workoutData]);
   };
-  
+
   // save workout id
-  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(
+    null
+  );
 
   // save finished workout id
-  const [finishedWorkoutId, setFinishedWorkoutId] = useState<string | null>(null);
-  
+  const [finishedWorkoutId, setFinishedWorkoutId] = useState<string | null>(
+    null
+  );
+
   //
   const [workoutData, setWorkoutData] = useState<IWorkout | null>(null);
-  
+
   return (
-    <AppContext.Provider value={{
-      setWorkouts,
-      addWorkout,
-      workouts,
-      selectedWorkoutId,
-      setSelectedWorkoutId,
-      setWorkoutData,
-      workoutData,
-      finishedWorkoutId,
-      setFinishedWorkoutId
-    }}>
+    <AppContext.Provider
+      value={{
+        setWorkouts,
+        addWorkout,
+        workouts,
+        selectedWorkoutId,
+        setSelectedWorkoutId,
+        setWorkoutData,
+        workoutData,
+        finishedWorkoutId,
+        setFinishedWorkoutId,
+      }}
+    >
       {children}
     </AppContext.Provider>
-  )
-}
+  );
+};
 
 export default ContextProvider;

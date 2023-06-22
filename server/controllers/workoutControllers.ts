@@ -1,25 +1,22 @@
 import { IExercise, Workout } from '../models/workoutModel';
-import { Context } from "koa";
+import { Context } from 'koa';
 import bodyParser from 'koa-bodyparser';
-
 
 export const getAllWorkouts = async (ctx: Context) => {
   try {
     const user = ctx.state.user;
     const workouts = await Workout.find({ user_id: user._id });
     ctx.body = workouts;
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     ctx.body = { error: 'Failed getting all workouts' };
   }
-}
-
+};
 
 export const getWorkoutById = async (ctx: Context) => {
   try {
     const user = ctx.state.user;
-    const workout = await Workout.findOne({ _id: ctx.params.id, user_id: user._id});
+    const workout = await Workout.findOne({ _id: ctx.params.id, user_id: user._id });
     if (!workout) {
       ctx.status = 404;
       ctx.body = { error: 'Workout not found' };
@@ -46,21 +43,20 @@ export const createWorkout = async (ctx: Context) => {
     const user = ctx.state.user;
 
     const workout = new Workout({
-      name, 
+      name,
       exercises,
       user_id: user._id
-    })
-  
+    });
+
     const newWorkout = await workout.save();
 
     ctx.status = 201;
     ctx.body = newWorkout;
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     ctx.body = { error: 'Error while creating the workout' };
   }
-}
+};
 
 interface UpdateWorkoutRequest {
   name: string;
@@ -99,12 +95,11 @@ export const updateWorkout = async (ctx: Context) => {
   }
 };
 
-
 export const deleteWorkout = async (ctx: Context) => {
   try {
     const id = ctx.params.id;
     const user = ctx.state.user;
-    const workout = await Workout.findOneAndRemove({ _id: id, user_id: user._id }); 
+    const workout = await Workout.findOneAndRemove({ _id: id, user_id: user._id });
 
     if (!workout) {
       ctx.status = 404;
@@ -114,10 +109,8 @@ export const deleteWorkout = async (ctx: Context) => {
 
     ctx.status = 200;
     ctx.body = { message: 'Workout deleted' };
-    
   } catch (error) {
     ctx.status = 500;
     ctx.body = { error: 'Internal server error' };
   }
 };
-

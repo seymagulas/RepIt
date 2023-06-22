@@ -1,10 +1,13 @@
 import mongoose, { ConnectOptions } from 'mongoose';
-import { config } from "./config";
+import { config } from './config';
 
-mongoose.connect(
-  `mongodb://${config.dbHost}:${config.dbPort}/${config.dbName}`, 
-  { useNewUrlParser: true, useUnifiedTopology: true } as ConnectOptions
-)
+const { dbName, dbHost, dbPort } = config;
+
+mongoose
+  .connect(`mongodb://${dbHost}:${dbPort}/${dbName}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  } as ConnectOptions)
   .then(() => {
     console.log('Connected to MongoDB');
   })

@@ -1,6 +1,12 @@
 import Router from 'koa-router';
 import { authMiddleware } from '../middlewares/authMiddleware';
-import { createWorkout, deleteWorkout, getAllWorkouts, getWorkoutById, updateWorkout } from '../controllers/workoutControllers';
+import {
+  createWorkout,
+  deleteWorkout,
+  getAllWorkouts,
+  getWorkoutById,
+  updateWorkout
+} from '../controllers/workoutControllers';
 
 export const workoutRouter = new Router();
 

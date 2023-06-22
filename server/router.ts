@@ -13,11 +13,3 @@ router.all('(.*)', (ctx: Koa.Context) => {
   ctx.status = 404;
   ctx.body = 'Not Found';
 });
-
-
-
-
-
-
-
-
